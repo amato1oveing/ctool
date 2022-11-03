@@ -38,6 +38,7 @@ func Random64Byte() []byte {
 	return b
 }
 
+// Random64Str 生成64位以内数字和大小写英文随机数
 func Random64Str() string {
 	rand.Seed(time.Now().UnixNano())
 	b := make([]byte, 64)

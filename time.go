@@ -13,7 +13,7 @@ func ParseTime(timeStr string) (time.Time, error) {
 	return time.Time{}, nil
 }
 
-// IsZero 判断时间是否为空
-func IsZero(time time.Time) bool {
+// IsZeroTime 判断时间是否为空
+func IsZeroTime(time time.Time) bool {
 	return time.IsZero()
 }
