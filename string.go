@@ -51,6 +51,104 @@ func ToString(val interface{}) string {
 	return fmt.Sprintf("%v", val)
 }
 
+//ToBool interface转bool
+func ToBool(val interface{}) bool {
+	if val == nil {
+		return false
+	}
+	switch v := val.(type) {
+	case bool:
+		return v
+	default:
+		return false
+	}
+}
+
+// ToInt64 interface转int64
+func ToInt64(val interface{}) int64 {
+	if val == nil {
+		return 0
+	}
+	switch v := val.(type) {
+	case int, int8, int16, int32, uint, uint8, uint16, uint32, uint64, float32, float64:
+		return reflect.ValueOf(v).Int()
+	case int64:
+		return v
+	default:
+		return 0
+	}
+}
+
+// ToInt interface转int
+func ToInt(val interface{}) int {
+	return int(ToInt64(val))
+}
+
+// ToInt32 interface转int32
+func ToInt32(val interface{}) int32 {
+	return int32(ToInt64(val))
+}
+
+// ToInt16 interface转int16
+func ToInt16(val interface{}) int16 {
+	return int16(ToInt64(val))
+}
+
+// ToUint64 interface转uint64
+func ToUint64(val interface{}) uint64 {
+	if val == nil {
+		return 0
+	}
+	switch v := val.(type) {
+	case int, int8, int16, int32, uint, uint8, uint16, uint32, float32, float64:
+		return reflect.ValueOf(v).Uint()
+	case uint64:
+		return v
+	default:
+		return 0
+	}
+}
+
+// ToUint interface转uint
+func ToUint(val interface{}) uint {
+	return uint(ToUint64(val))
+}
+
+// ToUint32 interface转uint32
+func ToUint32(val interface{}) uint32 {
+	return uint32(ToUint64(val))
+}
+
+// ToUint16 interface转uint16
+func ToUint16(val interface{}) uint16 {
+	return uint16(ToUint64(val))
+}
+
+// ToFloat64 interface转float64
+func ToFloat64(val interface{}) float64 {
+	if val == nil {
+		return 0
+	}
+	switch v := val.(type) {
+	case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32:
+		return float64(reflect.ValueOf(v).Int())
+	case float64:
+		return v
+	default:
+		return 0
+	}
+}
+
+// ToFloat32 interface转float32
+func ToFloat32(val interface{}) float32 {
+	return float32(ToFloat64(val))
+}
+
+// ToFloat interface转float
+func ToFloat(val interface{}) float64 {
+	return ToFloat64(val)
+}
+
 // Bool2String bool转string
 func Bool2String(is bool) string {
 	if is {
