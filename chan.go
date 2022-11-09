@@ -28,25 +28,24 @@ func (c Chan) Close() error {
 }
 
 //Put 往管道中写数据
-func (c Chan) Put(v interface{}) error {
+func (c Chan) put(v interface{}) {
 	c <- v
-	return nil
 }
 
 // Get 从管道中读数据
-func (c Chan) Get() (interface{}, bool) {
+func (c Chan) get() (interface{}, bool) {
 	v, ok := <-c
 	return v, ok
 }
 
 // Add 往管道中放入一个标记，记录活跃数值
 func (c Chan) Add() {
-	c.Put(struct{}{})
+	c.put(struct{}{})
 }
 
 // Done 从管道中取出一个标记，减少活跃数值
 func (c Chan) Done() {
-	c.Get()
+	c.get()
 }
 
 // Cap cap
