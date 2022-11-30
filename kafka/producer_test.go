@@ -6,10 +6,12 @@ import (
 )
 
 func TestNewProducer(t *testing.T) {
-	producer := NewProducer()
-	producer.Addrs = []string{""}
-	producer.Topic = "topic"
-	producer.MaxProcs = 500
+	producer := NewProducer(&ProducerOption{
+		Addrs:      []string{""},
+		Topic:      "",
+		MaxProcs:   100,
+		ChannelMax: 100,
+	})
 	if err := producer.Start(context.TODO()); err != nil {
 		t.Log(err)
 		return

@@ -12,17 +12,39 @@ import (
 // sarame.OffsetNewest int64 = -1
 // sarame.OffsetOldest int64 = -2
 type Consumer struct {
-	Addrs           []string    `json:"addrs" yaml:"addrs"` //如果定义了group,则addrs是zookeeper的地址(2181)，否则的话是kafka的地址(9092)
-	Topics          []string    `json:"topics" yaml:"topics"`
-	Group           string      `json:"group" yaml:"group"`
-	Offset          string      `json:"offset" yaml:"offset"`
-	Message         chan []byte `json:"-" yaml:"-"` //从这个管道中读取数据
-	*kafka.Consumer `json:"-" yaml:"-"`
+	Addrs   []string //如果定义了group,则addrs是zookeeper的地址(2181)，否则的话是kafka的地址(9092)
+	Topics  []string
+	Group   string
+	Offset  string
+	Message chan []byte //从这个管道中读取数据
+	*kafka.Consumer
 }
 
 // NewConsumer new consumer
-func NewConsumer() *Consumer {
-	return new(Consumer)
+func NewConsumer(option *ConsumerOption) *Consumer {
+	if option == nil {
+		option = NewConsumerOption()
+	}
+	return &Consumer{
+		Addrs:  option.Addrs,
+		Topics: option.Topics,
+		Group:  option.Group,
+		Offset: option.Offset,
+	}
+}
+
+// ConsumerOption consumer option
+type ConsumerOption struct {
+	Addrs  []string `json:"addrs" yaml:"addrs"`
+	Topics []string `json:"topics" yaml:"topics"`
+	Group  string   `json:"group" yaml:"group"`
+	Offset string   `json:"offset" yaml:"offset"`
+}
+
+func NewConsumerOption() *ConsumerOption {
+	return &ConsumerOption{
+		Offset: "latest",
+	}
 }
 
 //ReadOne read one message

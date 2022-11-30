@@ -9,16 +9,38 @@ import (
 
 //Producer kafka producer
 type Producer struct {
-	Addrs    []string         `json:"addrs" yaml:"addrs"`
-	Topic    string           `json:"topic" yaml:"topic"`
-	MaxProcs int              `json:"max_procs" yaml:"max_procs"` //最大并发写协程, 由于并发写入topic,写入顺序不可控,想要严格数序的话,maxThreads = 1即可
-	Message  chan []byte      `json:"-" yaml:"-"`                 //将数据写入这个管道中
+	Addrs    []string
+	Topic    string
+	MaxProcs int              //最大并发写协程, 由于并发写入topic,写入顺序不可控,想要严格数序的话,maxThreads = 1即可
+	Message  chan []byte      //将数据写入这个管道中
 	channel  *channel.Channel //并发写topic的协程控制
 }
 
 //NewProducer new producer
-func NewProducer() *Producer {
-	return new(Producer)
+func NewProducer(option *ProducerOption) *Producer {
+	if option == nil {
+		option = NewProducerOption()
+	}
+	return &Producer{
+		Addrs:    option.Addrs,
+		Topic:    option.Topic,
+		MaxProcs: option.MaxProcs,
+		channel:  channel.NewChannel(option.ChannelMax),
+	}
+}
+
+type ProducerOption struct {
+	Addrs      []string `json:"addrs" yaml:"addrs"`
+	Topic      string   `json:"topic" yaml:"topic"`
+	MaxProcs   int      `json:"max_procs" yaml:"max_procs"`
+	ChannelMax int      `json:"channel_max" yaml:"channel_max"`
+}
+
+func NewProducerOption() *ProducerOption {
+	return &ProducerOption{
+		MaxProcs:   100,
+		ChannelMax: 100,
+	}
 }
 
 //WriteOne write one message

@@ -1,0 +1,117 @@
+package ctool
+
+// Tree 树
+type Tree[T any] struct {
+	root *treeNode[T]
+}
+
+// treeNode 树节点
+type treeNode[T any] struct {
+	value   T
+	left    *treeNode[T]
+	right   *treeNode[T]
+	handler func(value interface{}) bool
+}
+
+// add 添加一个元素
+func (t *treeNode[T]) add(value interface{}) {
+	if t.value == nil {
+		t.value = value
+		return
+	}
+	if t.handler(value) {
+		if t.left == nil {
+			t.left = &treeNode[T]{
+				value:   value,
+				handler: t.handler,
+			}
+		} else {
+			t.left.add(value)
+		}
+	} else {
+		if t.right == nil {
+			t.right = &treeNode[T]{
+				value:   value,
+				handler: t.handler,
+			}
+		} else {
+			t.right.add(value)
+		}
+	}
+}
+
+// delete 删除一个元素
+func (t *treeNode[T]) delete(value interface{}) {
+	if t.left != nil {
+		if t.left.value == value {
+			t.left = nil
+			return
+		}
+		t.left.delete(value)
+	}
+	if t.right != nil {
+		if t.right.value == value {
+			t.right = nil
+			return
+		}
+		t.right.delete(value)
+	}
+}
+
+// NewTree 创建一个树
+func NewTree[T any](fn func(value interface{}) bool) *Tree[T] {
+	return &Tree[T]{root: &treeNode[T]{handler: fn}}
+}
+
+// Add 添加一个元素
+func (t *Tree[T]) Add(value interface{}) {
+	if t.root == nil {
+		t.root = &treeNode[T]{
+			value: value,
+		}
+		return
+	}
+	t.root.add(value)
+}
+
+// Delete 删除一个元素
+func (t *Tree[T]) Delete(value interface{}) {
+	if t.root == nil {
+		return
+	}
+	if t.root.value == value {
+		t.root = nil
+		return
+	}
+	t.root.delete(value)
+}
+
+//preOrder 前序遍历
+func (t *treeNode[T]) preOrder() []interface{} {
+	var values []interface{}
+	if t.value != nil {
+		values = append(values, t.value)
+	}
+	if t.left != nil {
+		values = append(values, t.left.preOrder()...)
+	}
+	if t.right != nil {
+		values = append(values, t.right.preOrder()...)
+	}
+	return values
+}
+
+// midOrder 中序遍历
+func (t *treeNode[T]) midOrder() []interface{} {
+	var values []interface{}
+	if t.left != nil {
+		values = append(values, t.left.midOrder()...)
+	}
+	if t.value != nil {
+		values = append(values, t.value)
+	}
+	if t.right != nil {
+		values = append(values, t.right.midOrder()...)
+	}
+	return values
+}
