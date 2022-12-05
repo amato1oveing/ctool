@@ -1,22 +1,13 @@
 package ctool
 
-import "reflect"
-
 // Contain 元素是否存在于数组中
 func Contain[T comparable](val T, array []T) (exists bool, index int) {
-	exists = false
-	index = -1
-
-	s := reflect.ValueOf(array)    //获取数组的reflect.Value
-	for i := 0; i < s.Len(); i++ { //遍历数组
-		if reflect.DeepEqual(val, s.Index(i).Interface()) == true { //比较数组的值
-			exists = true
-			index = i
-			return
+	for i, v := range array {
+		if v == val {
+			return true, i
 		}
 	}
-
-	return
+	return false, -1
 }
 
 // Equal 判断两个数组是否相等
